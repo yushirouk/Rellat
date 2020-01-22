@@ -1,112 +1,154 @@
 <html>
 <head>
 <SCRIPT LANGUAGE="JavaScript">
-<!--  Begin
-var crlf = "\r\n";
-var x = 1;
-var y = 1;
-var dx = 1;
-var dy = 1;
-var s = "";
-var u = 0;
-var oops_flag = false;
-var score = 0;
-function move1() {
-x += dx;
-if (x > 31) {
-x -= 2 * Math.abs(dx);
-if (dx > 0) dx = -dx;
-}
-if (x <  0) {
-x += 2 * Math.abs(dx);
-if (dx < 0) dx = -dx;
-}
-y += dy;
-if (y > 14) {
-y -= 2 * Math.abs(dy);
-if (dy > 0) dy = -dy;
-if (Math.abs(x - 2*u - 1) > 2) {
-oops_flag = true;
-}
-else {
-score += 1;
-   }
-}
-if (y <  0) { y += 2 * Math.abs(dy);
-if (dy < 0) dy = -dy; }
-}
-function display1() {
-var s1 = ""
-var i,j;
-if (oops_flag) return "Oops!! That one got by you!  Feel free to play again!";
-for (j=0;j<15;j++) {
-for (i=0;i<32;i++) {
-if (j == y && i == x) s1 += "o";
-else s1 += ".";
-}
-s1 += crlf;
-}
-var s2 = "";
-for (i=0;i<16;i++) {
-if (u == i) s2 += "==";
- else s2 += "..";
-}
-return (s1+s2);
-}
-var timerID = null;
-var timerRunning = false;
-var myform;
-function stopclock (){
-if(timerRunning) clearTimeout(timerID);
-timerRunning = false;
-}
-function startclock (form) {
-myform = form;
-oops_flag = false;
-if (navigator.userAgent.indexOf("Mac") > 2) crlf = "\n";
-stopclock();
-dotime();
-}
-function dotime() {
-move1();
-if (myform != null) {
-myform.text3.value = display1();
-myform.score.value = " " + score;
-}
-if (!oops_flag) timerID = setTimeout("dotime()",200);
-timerRunning = true;
-}
-// End -->
+	//변수 선언
+	var crlf = "\r\n"; //공백
+	var x = 1; //공의 x축 좌표값
+	var y = 1; //공의 y축 좌표값
+	var dx = 1; // x축 증가값
+	var dy = 1; // y축 증가값
+	var s = ""; //? 안쓰인다..
+	var u = 0; // user 위치
+	var oops_flag = false; // 공을 받아냈는지 판단하는 flag
+	var score = 0; // user 점수
+	
+	//공의 좌표를 계산하기 위한 함수. 여기서 계산된 좌표를 display1() 함수에서 화면에 출력한다.ㄴ
+	function move1() {
+		
+		x += dx; // x축 좌표를 dx만큼 증가시킨다.
+		
+		// 공이 오른쪽 벽에 닿았을 경우
+		if (x > 31) {
+			x -= 2 * Math.abs(dx); //x의 최대값은 31이다.(공이 벽에 부딪힘) 그다음 공의 위치는 -1만큼 감소해야 한다. -2인 이유는 현재 x값이 32이기 때문이다(이 값은 아직 display되지 않았다.) 
+			
+			if (dx > 0) // 이 조건식은 이상하다. 당연히 이경우는 dx가 양수이기 때문이다.
+				dx = -dx; // 공의 증가값을 음수로 바꾼다. 즉 공의 방향이 바뀐다.
+		}
+		
+		// 공이 왼쪽 벽에 닿았을 경우
+		if (x < 0) {
+			x += 2 * Math.abs(dx); //위와 같은 이유이다.
+			if (dx < 0)  // 마찬가지로 불필요해 보인다.
+				dx = -dx; //  공의 증가값을 양수로 바꾼다. 즉 공의 방향이 바뀐다.
+		}
+		
+		y += dy; // y축 좌표를 y만큼 증가시킨다.
+		
+		// 공이 바닥에 닿았을 경우
+		if (y > 14) {
+			y -= 2 * Math.abs(dy); //위와 같은 이유이다.
+			if (dy > 0) // 마찬가지로 불필요해 보인다. 양수이니까 아래 방향으로 좌표 이동하였을 것이므로.
+				dy = -dy; // 공의 증가값을 음수로 바꾼다.
+			
+			// 공을 못 받아냈을 때
+			if (Math.abs(x - 2 * u - 1) > 2) { // 조금 이해 안됨...
+				oops_flag = true; // 게임over flag 설정
+			}
+			// 받아내면
+			else {
+				score += 1; // 점수 증가
+			}
+		}
+		
+		//공이 천장에 닿았을 경우
+		if (y < 0) {
+			y += 2 * Math.abs(dy); //위와 같은 이유이다.
+			if (dy < 0) // 마찬가지로 불필요해 보인다. 음수이니까 윗 방향으로 좌표 이동하였을 것이므로.
+				dy = -dy; // 공의 증가값을 양수로 바꾼다.
+		}
+	}
+	
+	//move에서 도출된 좌표로 게임 화면을 출력한다.
+	function display1() {
+		
+		// 게임화면 및 공의 위치 print
+		var s1 = ""
+		var i, j;
+		if (oops_flag)
+			return "Oops!! That one got by you!  Feel free to play again!";
+		for (j = 0; j < 15; j++) { //user를 표시할 마지막 줄을 제외하고 그린다
+			for (i = 0; i < 32; i++) {
+				if (j == y && i == x) // 공의 x,y좌표화 일치하는 지점에 공 표시
+					s1 += "o";
+				else
+					s1 += ".";
+			}
+			s1 += crlf; //줄바꿈 해가면서 그린다.
+		}
+		
+		// 유저 탁구채 print
+		var s2 = "";
+		for (i = 0; i < 16; i++) {
+			if (u == i) // 마우스로 컨트롤한 위치가 i와 같을 경우 유저 위치 표시
+				s2 += "==";
+			else
+				s2 += "..";
+		}
+		return (s1 + s2); // 완성된 화면을 return
+	}
+	var timerID = null;
+	var timerRunning = false;
+	var myform;
+	
+	//기존 타이머 초기화
+	function stopclock() {
+		if (timerRunning)
+			clearTimeout(timerID); // timeout초기화
+		timerRunning = false;
+	}
+	
+	//게임시작 함수
+	function startclock(form) {
+		myform = form;
+		oops_flag = false; // 초기화
+		if (navigator.userAgent.indexOf("Mac") > 2)
+			crlf = "\n"; //mac일경우 line separator 변경
+		stopclock(); // 기존 timer초기화
+		dotime(); // 신규 timer 시작
+	}
+	
+	function dotime() {
+		move1(); // 공의 외치 계산
+		if (myform != null) {
+			myform.text3.value = display1(); // 게임화면 출력
+			myform.score.value = " " + score; // 점수 출력
+		}
+		if (!oops_flag)
+			timerID = setTimeout("dotime()", 200); //0.2초마다 화면을 갱신한다.
+		timerRunning = true;
+	}
 </SCRIPT>
 
 </head>
 <body>
-	<center><h1>Pong</h1>
-	Press start to play.  Move the paddle by putting your cursor on the dashes.
-	<p>
-	<form name=form>
-	<textarea name=text3 rows=16 cols=34 wrap>[game field]</textarea><p>
-	<p>
-	<a href="" onMouseOver="u =0">\\\</a>
-	<a href="" onMouseOver="u =1">\\\</a>
-	<a href="" onMouseOver="u =2">\\\</a>
-	<a href="" onMouseOver="u =3">\\\</a>
-	<a href="" onMouseOver="u =4">\\\</a>
-	<a href="" onMouseOver="u =5">\\\</a>
-	<a href="" onMouseOver="u =6">\\\</a>
-	<a href="" onMouseOver="u =7">\\\</a>
-	<a href="" onMouseOver="u =8">\\\</a>
-	<a href="" onMouseOver="u =9">\\\</a>
-	<a href="" onMouseOver="u = 10">\\\</a>
-	<a href="" onMouseOver="u = 11">\\\</a>
-	<a href="" onMouseOver="u = 12">\\\</a>
-	<a href="" onMouseOver="u = 13">\\\</a>
-	<a href="" onMouseOver="u = 14">\\\</a>
-	<a href="" onMouseOver="u = 15">\\\</a>
-	<a href="" onMouseOver="u = 15">\\\</a><p>
-	<input type=button name=button1 value="Start" onCLick="startclock(this.form)">
-	Score: <input type=text name=score size=10 value=0>
-	</form>
+	<center>
+		<h1>Pong</h1>
+		Press start to play. Move the paddle by putting your cursor on the dashes.
+		<p>
+		<form name=form>
+			<textarea name=text3 rows=16 cols=34 wrap>[game field]</textarea>
+			<p>
+			<p>
+				<a href="" onMouseOver="u =0">\\\</a> 
+				<a href="" onMouseOver="u =1">\\\</a>
+				<a href="" onMouseOver="u =2">\\\</a> 
+				<a href="" onMouseOver="u =3">\\\</a>
+				<a href="" onMouseOver="u =4">\\\</a> 
+				<a href="" onMouseOver="u =5">\\\</a>
+				<a href="" onMouseOver="u =6">\\\</a> 
+				<a href="" onMouseOver="u =7">\\\</a>
+				<a href="" onMouseOver="u =8">\\\</a> 
+				<a href="" onMouseOver="u =9">\\\</a>
+				<a href="" onMouseOver="u = 10">\\\</a> 
+				<a href="" onMouseOver="u = 11">\\\</a>
+				<a href="" onMouseOver="u = 12">\\\</a>
+				<a href="" onMouseOver="u = 13">\\\</a>
+				<a href="" onMouseOver="u = 14">\\\</a>
+				<a href="" onMouseOver="u = 15">\\\</a>
+				<a href="" onMouseOver="u = 15">\\\</a> <!-- 필요없는듯 -->
+			<p>
+				<input type=button name=button1 value="Start" onCLick="startclock(this.form)"> Score: <input type=text name=score size=10 value=0>
+		</form>
 	</center>
 </body>
 </html>
