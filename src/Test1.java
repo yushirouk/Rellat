@@ -4,6 +4,7 @@ public class Test1 {
 	private String test2;
 	private String test3;
 	
-	//³ª´Â kkrÀÌ´Ù
-	//ÁÖ¼® º¯°æÇÕ´Ï´Ù.
+	//ë‚˜ëŠ” ì§€ì¬ì•¼
+	//ë‚˜ëŠ” kkrì´ë‹¤
+	//ì£¼ì„ ë³€ê²½í•©ë‹ˆë‹¤.
 }
